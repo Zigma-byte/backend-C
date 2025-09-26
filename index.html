@@ -7,24 +7,43 @@
     <center>
       <h1>Click the button to talk to the C server</h1>
       <button id="myButton">Send</button>
-      <p id="response"></p>
+      <p>Server Response: <span id="response">Unknown</span></p>
+      <p>Current Server State: <span id="serverState">Unknown</span></p>
       <br><br><br>
       <hr>
-      <p>Be aware that by pressing the Send button will send a request with your IP and etc.</p>
-      <p>Its for testing purposes to see if the request was actaully from "you"</p>
+      <p>Be aware that by pressing the Send button it will send a request with your IP and etc.</p>
+      <p>Its for testing purposes to see if the request was actually from "you"</p>
     </center>
 
     <script>
-        document.getElementById("myButton").addEventListener("click", () => {
+        const responseSpan = document.getElementById("response");
+        const stateSpan = document.getElementById("serverState");
+        const button = document.getElementById("myButton");
+
+        // Function to fetch current state from the server
+        function fetchState() {
+            fetch("http://localhost:8080/state")
+                .then(r => r.text())
+                .then(text => stateSpan.textContent = text)
+                .catch(() => stateSpan.textContent = "Server not running");
+        }
+
+        // Handle button click: send request and update state
+        button.addEventListener("click", () => {
             fetch("http://localhost:8080/click")
-                .then(response => response.text())
+                .then(r => r.text())
                 .then(text => {
-                    document.getElementById("response").textContent = text;
+                    responseSpan.textContent = text;
+                    fetchState(); // update state after click
                 })
                 .catch(() => {
-                    document.getElementById("response").textContent = "Server not running or CORS issue!";
+                    responseSpan.textContent = "Server not running or CORS issue!";
+                    stateSpan.textContent = "Unknown";
                 });
         });
+
+        // Load initial state on page load
+        fetchState();
     </script>
 </body>
 </html>
