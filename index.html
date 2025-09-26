@@ -20,7 +20,6 @@
         const stateSpan = document.getElementById("serverState");
         const button = document.getElementById("myButton");
 
-        // Function to fetch current state from the server
         function fetchState() {
             fetch("http://localhost:8080/state")
                 .then(r => r.text())
@@ -28,13 +27,12 @@
                 .catch(() => stateSpan.textContent = "Server not running");
         }
 
-        // Handle button click: send request and update state
         button.addEventListener("click", () => {
             fetch("http://localhost:8080/click")
                 .then(r => r.text())
                 .then(text => {
                     responseSpan.textContent = text;
-                    fetchState(); // update state after click
+                    fetchState(); 
                 })
                 .catch(() => {
                     responseSpan.textContent = "Server not running or CORS issue!";
@@ -42,7 +40,6 @@
                 });
         });
 
-        // Load initial state on page load
         fetchState();
     </script>
 </body>
